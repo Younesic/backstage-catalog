@@ -1,0 +1,11 @@
+# production/catalog-info.yaml
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: production-catalog
+spec:
+  targets:
+    - ./production-groups.yaml
+    - ./production-users.yaml
+  rules:
+    - allow: [Group, User]
