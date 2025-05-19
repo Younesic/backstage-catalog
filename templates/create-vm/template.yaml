@@ -5,8 +5,8 @@ metadata:
   title: Créer une VM via Crossplane
   description: Provisionner une VM à l'aide d'une Claim Crossplane
 spec:
-  owner: group:infra          # référence claire au Group que nous avons créé
-  type: service               # (catégorie dans le Scaffolder, pas celle du composant)
+  owner: group:infra
+  type: service
 
   parameters:
     - title: Informations de la VM
@@ -22,28 +22,39 @@ spec:
           default: micro
 
   steps:
+    # 1️⃣  Copie des fichiers dans le workspace temporaire
     - id: fetch
       name: Préparer les fichiers
       action: fetch:template
       input:
-        url: ./skeleton                # chemin relatif dans le dépôt
+        url: ./skeleton
         values:
           name: ${{ parameters.name }}
           size: ${{ parameters.size }}
 
-    # ------------------------------------------------------------------
+    # 2️⃣  Création de la PR dans le dépôt catalog
     - id: publish
+      name: Créer la pull request
+      action: publish:github:pull-request
+      input:
+        repoUrl: github.com?owner=Younesic&repo=backstage-catalog
+        branchName: backstage-integration
+        title: "Ajout du composant ${{ parameters.name }}"
+        description: "Composant généré par le template create-vm"
+        targetPath: ""                    # racine du dépôt
+        # le workspace courant sera entièrement ajouté à la PR
+
+    # 3️⃣  Enregistrement dans le catalogue
+    - id: register
       name: Publier dans le catalogue
       action: catalog:register
       input:
-        # ► URL absolue de votre dépôt, racine de la branche par défaut
-        repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/main
-        # ► Chemin (dans le dépôt) où le fichier sera ajouté par la PR
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
         catalogInfoPath: components/${{ parameters.name | lower }}.yaml
-    # ------------------------------------------------------------------
-
 
   output:
     links:
+      - title: Pull request GitHub
+        url: ${{ steps.publish.output.pullRequestUrl }}
       - title: Voir dans le catalogue
         url: "{{ catalogInfoUrl }}"
