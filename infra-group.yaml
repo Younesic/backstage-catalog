@@ -1,0 +1,53 @@
+# ─────—— Organisation ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: sig
+  title: SIG
+spec:
+  type: organization
+  children: [production]
+
+---
+# ─────—— Département ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: production
+  title: Département Production
+spec:
+  type: department
+  parent: sig
+  children: [infra]
+
+---
+# ─────—— Équipe (team) ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: infra
+  title: Équipe Infra
+spec:
+  type: team          # ← clé déterminante
+  parent: production
+  children: []
+
+---
+# ─────—— Composant logiciel ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: micro-vm
+  title: VM Micro (t3.micro)
+  description: Instance EC2 gérée par Crossplane
+  annotations:
+    crossplane.io/claim-group: platform.example.org
+    crossplane.io/claim-version: v1alpha1
+    crossplane.io/claim-kind: VirtualMachine
+    crossplane.io/claim-name: micro
+    crossplane.io/kubernetes-cluster: microk8s
+    crossplane.io/namespace: default
+spec:
+  type: resource
+  lifecycle: production
+  owner: group:infra          # ← référence explicite au Group infra
