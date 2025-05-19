@@ -19,4 +19,4 @@ spec:
   rules:
     - allow: [Component]
   targets:
-    - ./components/*.yaml         # ← juste le dossier
+    - ./components       # ← juste le dossier
