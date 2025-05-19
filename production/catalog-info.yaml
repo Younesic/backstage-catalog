@@ -9,4 +9,4 @@ spec:
     - ./production-users.yaml
     - ./VMs/micro-vm/catalog-info.yaml
   rules:
-    - allow: [Group, User]
+    - allow: [Group, User, Component ]
