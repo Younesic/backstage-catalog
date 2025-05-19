@@ -42,7 +42,7 @@ spec:
         branchName: backstage-integration
         title: "Ajout du composant ${{ parameters.name }}"
         description: "Composant généré par le template create-vm"   # ← AJOUTE ceci
-        targetPath: components/${{ values.slug }}.yaml        # ① chemin réel du fichier
+        targetPath: ""            # (ou ce que tu avais)
         update: true
 
 
@@ -50,9 +50,8 @@ spec:
     - id: register
       action: catalog:register
       input:
-        repoContentsUrl: https://github.com/Younesic/backstage-catalog/tree/backstage-integration   # ② « tree », pas « blob »
-        catalogInfoPath: components/${{ values.slug }}.yaml                                          # ③ même slug que ci-dessus
-
+        repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
+        catalogInfoPath: components/${{ values.slug }}.yaml
 
 
   output:
