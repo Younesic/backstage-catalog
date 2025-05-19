@@ -56,6 +56,7 @@ spec:
         catalogInfoPath: components/${{ parameters.name | lower }}.yaml
 
 
+
   output:
     links:
       - title: Pull request GitHub
