@@ -7,5 +7,6 @@ spec:
   targets:
     - ./production-groups.yaml
     - ./production-users.yaml
+    - ./VMs/micro-vm/catalog-info.yaml
   rules:
     - allow: [Group, User]
