@@ -3,8 +3,9 @@ kind: Location
 metadata:
   name: awb-entities
 spec:
-  rules: 
-    - allow: [System, Group, User]    # ajoutez toutes les kinds nécessaires
+  rules:
+    - allow: [System, Group, User]
   targets:
     - ./organization.yaml
     - ./locations.yaml
+
