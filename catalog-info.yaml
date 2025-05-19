@@ -8,4 +8,4 @@ spec:
   targets:
     - ./groups/infra-group.yaml        # groups
     - ./components/micro-vm.yaml       # composant
-    - ./templates/create-vm/template.yam # template
+    - ./templates/create-vm/template.yaml # template
