@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: production
+spec:
+  type: department
+  profile:
+    displayName: Production
+  children: []
