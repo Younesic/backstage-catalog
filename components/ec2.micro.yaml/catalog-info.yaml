@@ -1,0 +1,5 @@
+metadata:
+  name: ec2-micro          # toujours autorisé (a-z-0-9-)
+  title: VM micro (ec2.micro)
+  annotations:
+    crossplane.io/claim-name: ec2-micro
