@@ -4,7 +4,7 @@ metadata:
   name: awb-entities
 spec:
   rules: 
-    allow: [System]
+    allow: [System, Group, User]    # ajoutez toutes les kinds nécessaires
   targets:
     - ./organization.yaml
     - ./locations.yaml
