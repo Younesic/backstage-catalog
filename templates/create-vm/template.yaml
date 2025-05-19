@@ -31,12 +31,17 @@ spec:
           name: ${{ parameters.name }}
           size: ${{ parameters.size }}
 
+    # ------------------------------------------------------------------
     - id: publish
       name: Publier dans le catalogue
       action: catalog:register
       input:
-        repoContentsUrl: "."
-        catalogInfoPath: "./catalog-info.yaml"
+        # ► URL absolue de votre dépôt, racine de la branche par défaut
+        repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/main
+        # ► Chemin (dans le dépôt) où le fichier sera ajouté par la PR
+        catalogInfoPath: components/${{ parameters.name | lower }}.yaml
+    # ------------------------------------------------------------------
+
 
   output:
     links:
