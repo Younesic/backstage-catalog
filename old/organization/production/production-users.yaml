@@ -1,9 +1,0 @@
-apiVersion: backstage.io/v1alpha1
-kind: User
-metadata:
-  name: younes.bami
-spec:
-  profile:
-    displayName: Younes Bami
-    email: younes.bami@gmail.com
-  memberOf: [production]

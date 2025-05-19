@@ -10,8 +10,8 @@ metadata:
     crossplane.io/claim-kind:    VirtualMachine
     crossplane.io/claim-name:    micro
     crossplane.io/kubernetes-cluster: microk8s
-    crossplane.io/namespace: default
+    crossplane.io/namespace:     default
 spec:
   type: resource
   lifecycle: production
-  owner: production
+  owner: group:infra
