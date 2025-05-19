@@ -1,4 +1,3 @@
-# production/catalog-info.yaml
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
@@ -9,4 +8,4 @@ spec:
     - ./production-users.yaml
     - ./VMs/micro-vm/catalog-info.yaml
   rules:
-    - allow: [Group, User, Component ]
+    - allow: [Group, User, Component]

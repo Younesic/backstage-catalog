@@ -8,10 +8,10 @@ metadata:
     crossplane.io/claim-group:   platform.example.org
     crossplane.io/claim-version: v1alpha1
     crossplane.io/claim-kind:    VirtualMachine
-    crossplane.io/claim-name:    demo-micro
+    crossplane.io/claim-name:    micro
     crossplane.io/kubernetes-cluster: microk8s
     crossplane.io/namespace: default
 spec:
-  type: resource           # ou "infrastructure" si tu préfères
+  type: resource
   lifecycle: production
   owner: production
