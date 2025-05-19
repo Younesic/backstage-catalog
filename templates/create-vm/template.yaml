@@ -46,14 +46,6 @@ spec:
         update: true
 
 
-    # 3️⃣  Enregistrement dans le catalogue
-    - id: register
-      action: catalog:register
-      input:
-        repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
-        catalogInfoPath: components/${{ values.slug }}.yaml
-
-
   output:
     links:
       - title: Pull request GitHub
