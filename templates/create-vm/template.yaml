@@ -49,8 +49,11 @@ spec:
       name: Publier dans le catalogue
       action: catalog:register
       input:
-        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        # URL racine du dépôt + branche créée à l’étape précédente
+        repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
+        # Chemin du fichier que le template vient d’ajouter
         catalogInfoPath: components/${{ parameters.name | lower }}.yaml
+
 
   output:
     links:
