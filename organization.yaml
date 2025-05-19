@@ -1,20 +1,32 @@
-
+# --- Organisation AWB ---------------------------------
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
-  name: awb-sig
-  title: Système d'Information Groupe(SIG)
-  description: Système d'Information Groupe
-  links:
-    - url: http://www.attijariwafabank.com/
-      title: Website
+  name: awb
+  title: Attijariwafa Bank
 spec:
   type: organization
-  profile:
-    displayName: AWB SIG
-    email: sig@attijariwafa.com
   children: [production]
 
+# --- Département Production ---------------------------
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: production
+  title: Département Production
+spec:
+  type: department
+  parent: awb
+  children: [infra]
 
-
-
+# --- Tribe Infra --------------------------------------
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: infra
+  title: Tribe Infra
+spec:
+  type: team
+  parent: production

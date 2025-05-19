@@ -1,11 +1,11 @@
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
-  name: awb-entities
+  name: awb-root
 spec:
+  # ← syntaxe correcte : tableau de règles
   rules:
-    - allow: [System, Group, User]
+    - allow: [Group, Component]
   targets:
     - ./organization.yaml
-    - ./locations.yaml
-
+    - ./components/micro-vm.yaml
