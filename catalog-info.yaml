@@ -20,4 +20,3 @@ spec:
     - allow: [Component]
   targets:
     - ./components/*.yaml
-    - ./components
