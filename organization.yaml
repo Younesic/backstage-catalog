@@ -13,16 +13,8 @@ spec:
   profile:
     displayName: AWB SIG
     email: sig@attijariwafa.com
-  children: [digital-center, core-processing]
+  children: [production]
 
----
-apiVersion: backstage.io/v1alpha1
-kind: Location
-metadata:
-  name: awb-sig-groups
-  description: AWB SIG groups definition
-spec:
-  targets:
-    - ./organization/production/production-groups.yaml
+
 
 
