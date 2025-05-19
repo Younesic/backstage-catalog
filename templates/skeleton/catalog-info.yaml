@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  annotations:
+    crossplane.io/claim-group: platform.example.org
+    crossplane.io/claim-version: v1alpha1
+    crossplane.io/claim-kind: VirtualMachine
+    crossplane.io/kubernetes-cluster: microk8s
+    crossplane.io/namespace: default
+spec:
+  type: service
+  lifecycle: experimental
+  owner: team-a@example.com

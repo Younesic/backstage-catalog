@@ -1,0 +1,11 @@
+# infra-claims/virtual-machines/demo-micro/claim.yaml
+apiVersion: platform.example.org/v1alpha1      # ← group/version de votre XRD
+kind: VirtualMachine                           # ← Claim que vous exposez
+metadata:
+  name: micro
+spec:
+  compositionSelector:
+    matchLabels:
+      platform.example.org/size: micro         # cible la Composition “micro”
+  parameters:
+    size: micro                                # paramètre passé à la Composition

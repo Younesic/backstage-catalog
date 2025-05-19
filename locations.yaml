@@ -1,0 +1,23 @@
+---
+# apps-locations.yaml ou un fichier dédié
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: crossplane-claims
+  description: Toutes les VM gérées par Crossplane
+spec:
+  targets:
+    - ./organization/production/VMs/micro-vm/catalog-info.yaml
+  rules:
+    - allow: [Component]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: templates
+  description: Templates de scaffolding Backstage
+spec:
+  targets:
+    - ./organization/production/create-vm/skeleton/catalog-info.yaml  # <== Ajoute ce chemin ici
+    # autres templates...

@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: awb-entities
+spec:
+  rules: 
+    allow: [System]
+  targets:
+    - ./organization.yaml
+    - ./locations.yaml
