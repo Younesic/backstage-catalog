@@ -22,37 +22,34 @@ spec:
           default: micro
 
   steps:
-    # 1️⃣  Copie des fichiers dans le workspace temporaire
+    # 1️⃣  Copie du squelette
     - id: fetch
-      name: Préparer les fichiers
       action: fetch:template
       input:
         url: ./skeleton
         values:
-          name: ${{ parameters.name }}
+          name: ${{ parameters.name }}                 # ex. ec2.micro
           size: ${{ parameters.size }}
+          slug: ${{ parameters.name | lower | replace(".", "-") }}
+          #                "ec2.micro" ➜ "ec2-micro"
 
-    # 2️⃣  Création de la PR dans le dépôt catalog
+    # 2️⃣  PR (ou mise à jour) dans le dépôt
     - id: publish
-      name: Créer la pull request
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=Younesic&repo=backstage-catalog
         branchName: backstage-integration
         title: "Ajout du composant ${{ parameters.name }}"
-        description: "Composant généré par le template create-vm"
-        targetPath: ""                    # racine du dépôt
-        update: true                               # ← clé décisive
-        # le workspace courant sera entièrement ajouté à la PR
+        targetPath: components/${{ values.slug }}.yaml     # ✅ nom final
+        update: true
 
+    # 3️⃣  Enregistrement dans le catalogue
     - id: register
-      name: Publier dans le catalogue
       action: catalog:register
       input:
-        # URL racine du dépôt + branche créée à l’étape précédente
         repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
-        # Chemin du fichier que le template vient d’ajouter
-        catalogInfoPath: components/${{ parameters.name | lower }}.yaml
+        catalogInfoPath: components/${{ values.slug }}.yaml
+
 
   output:
     links:

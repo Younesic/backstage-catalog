@@ -1,4 +1,3 @@
-# catalog-info.yaml  (racine)
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
@@ -10,16 +9,14 @@ spec:
     - ./groups/infra-group.yaml
     - ./templates/create-vm/template.yaml
 
-# ──────────────────────────────────────────────────────────────
-# nouvelle Location qui “ouvre” le dossier components/
+# ↘  NOUVELLE Location, on pointe le dossier (pas de *.yaml)
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
   name: awb-components
-  description: Tous les composants (fichiers *.yaml) sous components/
 spec:
   rules:
     - allow: [Component]
   targets:
-    - ./components/*.yaml                 # ← un dossier, pas un fichier
+    - ./components            # ← juste le dossier
