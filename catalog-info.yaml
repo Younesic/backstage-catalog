@@ -4,7 +4,8 @@ metadata:
   name: awb-root
 spec:
   rules:
-    - allow: [Group, Component]        # déjà présent
+    - allow: [Group, Component, Template]        # déjà présent
   targets:
     - ./groups/infra-group.yaml        # groups
     - ./components/micro-vm.yaml       # composant
+    - ./templates/create-vm/template.yam # template
