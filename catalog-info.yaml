@@ -5,4 +5,6 @@ metadata:
 spec:
   targets:
     - ./infra-group.yaml          # ← le fichier ci-dessus
+    - ./templates/create-vm/template.yaml     # ← nouveau
+
     # - ./ops/ops-groups.yaml     # exemples de futurs sous-fichiers

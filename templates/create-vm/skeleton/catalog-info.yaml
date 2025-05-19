@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name }}
+  title: VM ${{ values.size }} (${{ values.name }})
+  description: Instance EC2 gérée par Crossplane
+  annotations:
+    crossplane.io/claim-group:   platform.example.org
+    crossplane.io/claim-version: v1alpha1
+    crossplane.io/claim-kind:    VirtualMachine
+    crossplane.io/claim-name:    ${{ values.name }}
+    crossplane.io/kubernetes-cluster: microk8s
+    crossplane.io/namespace:     default
+spec:
+  type: resource
+  lifecycle: production
+  owner: group:infra              # le composant appartient à la tribe Infra

@@ -1,0 +1,44 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: create-vm
+  title: Créer une VM via Crossplane
+  description: Provisionner une VM à l'aide d'une Claim Crossplane
+spec:
+  owner: group:infra          # référence claire au Group que nous avons créé
+  type: service               # (catégorie dans le Scaffolder, pas celle du composant)
+
+  parameters:
+    - title: Informations de la VM
+      required: [name, size]
+      properties:
+        name:
+          type: string
+          title: Nom de la VM
+        size:
+          type: string
+          title: Taille de la VM
+          enum: [micro, nano, small]
+          default: micro
+
+  steps:
+    - id: fetch
+      name: Préparer les fichiers
+      action: fetch:template
+      input:
+        url: ./skeleton                # chemin relatif dans le dépôt
+        values:
+          name: ${{ parameters.name }}
+          size: ${{ parameters.size }}
+
+    - id: publish
+      name: Publier dans le catalogue
+      action: catalog:register
+      input:
+        repoContentsUrl: "."
+        catalogInfoPath: "./catalog-info.yaml"
+
+  output:
+    links:
+      - title: Voir dans le catalogue
+        url: "{{ catalogInfoUrl }}"
