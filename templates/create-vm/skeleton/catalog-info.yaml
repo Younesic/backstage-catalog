@@ -1,5 +1,0 @@
-metadata:
-  name: ${{ values.slug }}          # toujours autorisé (a-z-0-9-)
-  title: VM ${{ values.size }} (${{ values.name }})
-  annotations:
-    crossplane.io/claim-name: ${{ values.slug }}

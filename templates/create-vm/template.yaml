@@ -3,6 +3,7 @@ kind: Template
 metadata:
   name: create-vm
   title: Créer une VM via Crossplane
+  description: Provisionner une VM à l'aide d'une Claim Crossplane
 spec:
   owner: group:infra
   type: service
@@ -13,50 +14,49 @@ spec:
       properties:
         name:
           type: string
+          title: Nom de la VM
         size:
           type: string
+          title: Taille de la VM
           enum: [micro, nano, small]
           default: micro
 
   steps:
-    # 1️⃣  Copie du squelette
+    # 1️⃣  Copie des fichiers dans le workspace temporaire
     - id: fetch
+      name: Préparer les fichiers
       action: fetch:template
       input:
         url: ./skeleton
         values:
-          name: ${{ parameters.name }}              # ex. ec2.micro
+          name: ${{ parameters.name }}
           size: ${{ parameters.size }}
-          slug: ${{ parameters.name | lower | replace(".", "-") }}
-      #  "ec2.micro" ➜ "ec2-micro"
 
-
-    # 2️⃣  Création ou mise-à-jour de la PR
+    # 2️⃣  Création de la PR dans le dépôt catalog
     - id: publish
+      name: Créer la pull request
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=Younesic&repo=backstage-catalog
         branchName: backstage-integration
         title: "Ajout du composant ${{ parameters.name }}"
         description: "Composant généré par le template create-vm"
-        # ↓ Le fichier catalog-info.yaml copié par l’étape fetch sera
-        #   rangé ici dans la PR
-        targetPath: components/${{ parameters.name | lower }}.yaml
-        catalogInfoPath: components/${{ values.slug }}.yaml
-        update: true                       # si la PR existe déjà, on ajoute
+        targetPath: ""                    # racine du dépôt
+        update: true                               # ← clé décisive
+        # le workspace courant sera entièrement ajouté à la PR
 
-    # 3️⃣  Enregistrement dans le catalogue
     - id: register
+      name: Publier dans le catalogue
       action: catalog:register
       input:
-        # branche créée / mise-à-jour par l’étape publish
+        # URL racine du dépôt + branche créée à l’étape précédente
         repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
-        catalogInfoPath: components/${{ values.slug }}.yaml
-
+        # Chemin du fichier que le template vient d’ajouter
+        catalogInfoPath: components/${{ parameters.name | lower }}.yaml
 
   output:
     links:
-      - title: Pull request
+      - title: Pull request GitHub
         url: ${{ steps.publish.output.pullRequestUrl }}
       - title: Voir dans le catalogue
         url: "{{ catalogInfoUrl }}"
