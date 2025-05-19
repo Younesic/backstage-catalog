@@ -2,8 +2,51 @@ apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
   name: production
+  title: Production
+  description: production
+  annotations: 
+      backstage.io/kubernetes-label-selector: 'group=Production'
+
 spec:
   type: department
+  parent: awb-sig
   profile:
     displayName: Production
+    email: prod.sig@attijariwafa.com
   children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: indus-team
+  title: Squad Industrialisation
+  description: Squad Industrialisation
+  annotations: 
+      backstage.io/kubernetes-label-selector: 'tribe=indus-team'
+spec:
+  type: tribe
+  profile:
+    displayName: Industrialisation
+  parent: production
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: archi-prod
+  title: Architecture Production
+  description: Architecture production
+spec:
+  type: squad
+  parent: production
+  profile:
+    displayName: Architecture Production
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: production-users
+spec:
+  targets:
+    - ./production-users.yaml
