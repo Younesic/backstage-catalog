@@ -22,7 +22,6 @@ spec:
           default: micro
 
   steps:
-    # 1️⃣  Copie des fichiers dans le workspace temporaire
     - id: fetch
       name: Préparer les fichiers
       action: fetch:template
@@ -31,6 +30,8 @@ spec:
         values:
           name: ${{ parameters.name }}
           size: ${{ parameters.size }}
+          name_slug: ${{ parameters.name | lower }}   # ← ajout
+
 
     # 2️⃣  Création de la PR dans le dépôt catalog
     - id: publish
@@ -50,10 +51,9 @@ spec:
       name: Publier dans le catalogue
       action: catalog:register
       input:
-        # URL racine du dépôt + branche créée à l’étape précédente
         repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
-        # Chemin du fichier que le template vient d’ajouter
         catalogInfoPath: components/${{ parameters.name | lower }}.yaml
+
 
 
 
