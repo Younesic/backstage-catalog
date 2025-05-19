@@ -42,6 +42,7 @@ spec:
         title: "Ajout du composant ${{ parameters.name }}"
         description: "Composant généré par le template create-vm"
         targetPath: ""                    # racine du dépôt
+        update: true
         # le workspace courant sera entièrement ajouté à la PR
 
     # 3️⃣  Enregistrement dans le catalogue
