@@ -3,7 +3,6 @@ kind: Template
 metadata:
   name: create-vm
   title: Créer une VM via Crossplane
-  description: Provisionner une VM à l'aide d'une Claim Crossplane
 spec:
   owner: group:infra
   type: service
@@ -14,52 +13,45 @@ spec:
       properties:
         name:
           type: string
-          title: Nom de la VM
         size:
           type: string
-          title: Taille de la VM
           enum: [micro, nano, small]
           default: micro
 
   steps:
+    # 1️⃣  Copie du squelette
     - id: fetch
-      name: Préparer les fichiers
       action: fetch:template
       input:
         url: ./skeleton
         values:
           name: ${{ parameters.name }}
           size: ${{ parameters.size }}
-          name_slug: ${{ parameters.name | lower }}   # ← ajout
 
-
-    # 2️⃣  Création de la PR dans le dépôt catalog
+    # 2️⃣  Création ou mise-à-jour de la PR
     - id: publish
-      name: Créer la pull request
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=Younesic&repo=backstage-catalog
         branchName: backstage-integration
         title: "Ajout du composant ${{ parameters.name }}"
         description: "Composant généré par le template create-vm"
-        targetPath: ""                    # racine du dépôt
-        update: true
-        # le workspace courant sera entièrement ajouté à la PR
+        # ↓ Le fichier catalog-info.yaml copié par l’étape fetch sera
+        #   rangé ici dans la PR
+        targetPath: components/${{ parameters.name | lower }}.yaml
+        update: true                       # si la PR existe déjà, on ajoute
 
     # 3️⃣  Enregistrement dans le catalogue
     - id: register
-      name: Publier dans le catalogue
       action: catalog:register
       input:
+        # branche créée / mise-à-jour par l’étape publish
         repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
         catalogInfoPath: components/${{ parameters.name | lower }}.yaml
 
-
-
-
   output:
     links:
-      - title: Pull request GitHub
+      - title: Pull request
         url: ${{ steps.publish.output.pullRequestUrl }}
       - title: Voir dans le catalogue
         url: "{{ catalogInfoUrl }}"

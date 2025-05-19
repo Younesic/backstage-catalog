@@ -1,14 +1,14 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: {{ name_slug }}                # toujours en minuscules
-  title: VM {{ size }} ({{ name }})
+  name: ${{ values.name | lower }}          # ✅ minuscule
+  title: VM ${{ values.size }} (${{ values.name }})
   description: Instance EC2 gérée par Crossplane
   annotations:
     crossplane.io/claim-group:   platform.example.org
     crossplane.io/claim-version: v1alpha1
     crossplane.io/claim-kind:    VirtualMachine
-    crossplane.io/claim-name:    {{ name_slug }}
+    crossplane.io/claim-name:    ${{ values.name | lower }}
     crossplane.io/kubernetes-cluster: microk8s
     crossplane.io/namespace:     default
 spec:
