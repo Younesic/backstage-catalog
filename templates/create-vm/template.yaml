@@ -35,13 +35,16 @@ spec:
 
     # 2️⃣  PR (ou mise à jour) dans le dépôt
     - id: publish
+      name: Créer la pull request
       action: publish:github:pull-request
       input:
         repoUrl: github.com?owner=Younesic&repo=backstage-catalog
         branchName: backstage-integration
         title: "Ajout du composant ${{ parameters.name }}"
-        targetPath: components/${{ values.slug }}.yaml     # ✅ nom final
+        description: "Composant généré par le template create-vm"   # ← AJOUTE ceci
+        targetPath: ""            # (ou ce que tu avais)
         update: true
+
 
     # 3️⃣  Enregistrement dans le catalogue
     - id: register
