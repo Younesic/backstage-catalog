@@ -25,8 +25,11 @@ spec:
       input:
         url: ./skeleton
         values:
-          name: ${{ parameters.name }}
+          name: ${{ parameters.name }}              # ex. ec2.micro
           size: ${{ parameters.size }}
+          slug: ${{ parameters.name | lower | replace(".", "-") }}
+      #  "ec2.micro" ➜ "ec2-micro"
+
 
     # 2️⃣  Création ou mise-à-jour de la PR
     - id: publish
@@ -39,6 +42,7 @@ spec:
         # ↓ Le fichier catalog-info.yaml copié par l’étape fetch sera
         #   rangé ici dans la PR
         targetPath: components/${{ parameters.name | lower }}.yaml
+        catalogInfoPath: components/${{ values.slug }}.yaml
         update: true                       # si la PR existe déjà, on ajoute
 
     # 3️⃣  Enregistrement dans le catalogue
@@ -47,7 +51,8 @@ spec:
       input:
         # branche créée / mise-à-jour par l’étape publish
         repoContentsUrl: https://github.com/Younesic/backstage-catalog/blob/backstage-integration
-        catalogInfoPath: components/${{ parameters.name | lower }}.yaml
+        catalogInfoPath: components/${{ values.slug }}.yaml
+
 
   output:
     links:
