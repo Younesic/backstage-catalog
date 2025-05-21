@@ -12,8 +12,8 @@ metadata:
     - kind:virtualmachine
     - crossplane-claim
   annotations:
-    #backstage.io/managed-by-location: "cluster origin: microk8s-cluster"
-    #backstage.io/managed-by-origin-location: "cluster origin: microk8s-cluster"
+    backstage.io/managed-by-location: "cluster origin: microk8s-cluster"
+    backstage.io/managed-by-origin-location: "cluster origin: microk8s-cluster"
 
     # ----------- clés Crossplane requises -----------
     terasky.backstage.io/crossplane-resource: "true"
