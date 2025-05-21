@@ -9,7 +9,7 @@ metadata:
     crossplane.io/claim-api-version: platform.example.org/v1alpha1   # <group>/<version>
     crossplane.io/claim-kind:  VirtualMachine
     crossplane.io/claim-name:  ec2-micro
-    crossplane.io/kubernetes-cluster: microk8s-cluster               # voir remarque ci-dessous
+    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s-cluster              # voir remarque ci-dessous
     crossplane.io/namespace:   default
     # --- les deux lignes ci-dessous deviennent optionnelles ----------
     # crossplane.io/claim-group:   platform.example.org
