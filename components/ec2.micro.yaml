@@ -7,6 +7,7 @@ metadata:
   annotations:
     # ⬇️ CLUSTER :: CONTEXT  (deux fois le même nom si vous n’avez qu’un contexte)
     crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
+    backstage.io/kubernetes-label-selector: crossplane.io/claim-name=ec2-micro,crossplane.io/claim-namespace=default
 
     # ─── autres clés requises par le plugin ─────────────────────────────
     crossplane.io/claim-api-version: platform.example.org/v1alpha1
