@@ -5,15 +5,15 @@ metadata:
   title: VM micro (EC2.micro)
   description: Instance EC2 gérée par Crossplane
   annotations:
-    # --- annotations requises par le plugin Crossplane ---
-    crossplane.io/claim-api-version: platform.example.org/v1alpha1   # <group>/<version>
+    # ⬇️ CLUSTER :: CONTEXT  (deux fois le même nom si vous n’avez qu’un contexte)
+    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s-cluster
+
+    # ─── autres clés requises par le plugin ─────────────────────────────
+    crossplane.io/claim-api-version: platform.example.org/v1alpha1
     crossplane.io/claim-kind:  VirtualMachine
     crossplane.io/claim-name:  ec2-micro
-    crossplane.io/kubernetes-cluster: microk8s-cluster              # voir remarque ci-dessous
     crossplane.io/namespace:   default
-    # --- les deux lignes ci-dessous deviennent optionnelles ----------
-    # crossplane.io/claim-group:   platform.example.org
-    # crossplane.io/claim-version: v1alpha1
+
 spec:
   type: crossplane-claim
   lifecycle: production
