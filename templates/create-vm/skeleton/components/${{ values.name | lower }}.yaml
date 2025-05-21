@@ -9,9 +9,9 @@ metadata:
     crossplane.io/claim-version: v1alpha1
     crossplane.io/claim-kind:    VirtualMachine
     crossplane.io/claim-name:    ${{ values.slug }}
-    crossplane.io/kubernetes-cluster: microk8s
+    crossplane.io/kubernetes-cluster: microk8s-cluster
     crossplane.io/namespace:     default
 spec:
-  type: VM
+  type: crossplane-claim
   lifecycle: production
   owner: group:infra
