@@ -6,7 +6,7 @@ metadata:
   description: Instance EC2 gérée par Crossplane
   annotations:
     # ⬇️ CLUSTER :: CONTEXT  (deux fois le même nom si vous n’avez qu’un contexte)
-    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s-cluster
+    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
 
     # ─── autres clés requises par le plugin ─────────────────────────────
     crossplane.io/claim-api-version: platform.example.org/v1alpha1
