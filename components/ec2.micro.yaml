@@ -10,8 +10,9 @@ metadata:
 
     # ← permet d’identifier le namespace
     backstage.io/kubernetes-label-selector: |
-      crossplane.io/claim-name=ec2-micro,
+      crossplane.io/claim-name=ec2-micro
       crossplane.io/claim-namespace=crossplane-system
+
 
     # ← coordonnées complètes du claim
     terasky.backstage.io/claim-name:    ec2-micro
