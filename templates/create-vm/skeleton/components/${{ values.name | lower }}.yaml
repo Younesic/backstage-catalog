@@ -12,6 +12,6 @@ metadata:
     crossplane.io/kubernetes-cluster: microk8s
     crossplane.io/namespace:     default
 spec:
-  type: VM
+  type: crossplane-claim
   lifecycle: production
   owner: group:infra
