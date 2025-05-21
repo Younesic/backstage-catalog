@@ -5,14 +5,23 @@ metadata:
   title: VM micro (EC2.micro)
   description: Instance EC2 gérée par Crossplane
   annotations:
-    # — Cluster où vit le claim —
+    # ← indique au plugin dans quel cluster chercher
     backstage.io/managed-by-location: "kubernetes: microk8s-cluster"
-    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
+
+    # ← permet d’identifier le namespace
+    backstage.io/kubernetes-label-selector: |
+      crossplane.io/claim-name=ec2-micro,
+      crossplane.io/claim-namespace=crossplane-system
+
+    # ← coordonnées complètes du claim
     terasky.backstage.io/claim-name:    ec2-micro
     terasky.backstage.io/claim-plural:  virtualmachines
     terasky.backstage.io/claim-group:   platform.example.org
     terasky.backstage.io/claim-version: v1alpha1
-    backstage.io/kubernetes-label-selector: crossplane.io/claim-name=ec2-micro,crossplane.io/claim-namespace=default
+
+    # ← déjà correct
+    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
+
 spec:
   type: crossplane-claim
   lifecycle: production
