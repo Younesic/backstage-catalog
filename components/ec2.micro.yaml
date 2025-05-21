@@ -1,22 +1,47 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ec2-micro
-  title: VM micro (EC2.micro)
-  description: Instance EC2 gérée par Crossplane
+  # Le namespace == nom du cluster est la convention de l’ingestor.
+  # Pas obligatoire, mais garde-le pour rester homogène.
+  namespace: microk8s-cluster
+  name: ec2-micro-microk8s-cluster          # même naming que l’ingestor
+  title: ec2-micro
+  description: VirtualMachine ec2-micro (Crossplane Claim)
+  tags:
+    - cluster:microk8s-cluster
+    - kind:virtualmachine
+    - crossplane-claim
   annotations:
-    backstage.io/managed-by-location: "kubernetes: microk8s-cluster"
+    backstage.io/managed-by-location: "cluster origin: microk8s-cluster"
+    backstage.io/managed-by-origin-location: "cluster origin: microk8s-cluster"
 
-    # Une seule ligne OU multilignes sans virgule finale ni indentation
-    backstage.io/kubernetes-label-selector: "crossplane.io/claim-name=ec2-micro,crossplane.io/claim-namespace=crossplane-system"
+    # ----------- clés Crossplane requises -----------
+    terasky.backstage.io/crossplane-resource: "true"
 
     terasky.backstage.io/claim-name:    ec2-micro
+    terasky.backstage.io/claim-kind:    virtualmachine      # minuscule comme l’ingestor
     terasky.backstage.io/claim-plural:  virtualmachines
     terasky.backstage.io/claim-group:   platform.example.org
     terasky.backstage.io/claim-version: v1alpha1
 
-    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
+    # facultatif mais utile pour Graph / Overview complet
+    terasky.backstage.io/composite-kind:   CompositeVirtualMachine
+    terasky.backstage.io/composite-name:   ec2-micro-7ppll
+    terasky.backstage.io/composite-group:  platform.example.org
+    terasky.backstage.io/composite-version: v1alpha1
+    terasky.backstage.io/composite-plural: compositevirtualmachines
+    terasky.backstage.io/composition-name: vm-aws-micro
+
+    # type explicite (sinon le plugin le déduit, mais on reste strict)
+    terasky.backstage.io/component-type: crossplane-claim
+
+    # ----------- cluster & selector -----------
+    backstage.io/kubernetes-cluster: microk8s-cluster
+    backstage.io/kubernetes-label-selector: "crossplane.io/claim-name=ec2-micro,crossplane.io/claim-namespace=crossplane-system,crossplane.io/composite=ec2-micro-7ppll"
 spec:
   type: crossplane-claim
   lifecycle: production
   owner: group:infra
+  system: default/crossplane-system          # même relation que l’ingestor
+  consumesApis:
+    - "default/virtualmachine-platform.example.org--v1alpha1"
