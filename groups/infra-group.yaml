@@ -1,34 +1,34 @@
-# ─────—— Organisation ─────——
+# Organisation
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
+  namespace: microk8s-cluster      # ← même namespace que les VM
   name: sig
   title: SIG
 spec:
   type: organization
   children: [production]
-
 ---
-# ─────—— Département ─────——
+# Département
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
+  namespace: microk8s-cluster
   name: production
   title: Département Production
 spec:
   type: department
   parent: sig
   children: [infra]
-
 ---
-# ─────—— Équipe (team) ─────——
+# Équipe
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
+  namespace: microk8s-cluster
   name: infra
   title: Équipe Infra
 spec:
   type: team
   parent: production
-  children: []          
-
+  children: []
