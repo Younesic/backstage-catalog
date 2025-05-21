@@ -1,6 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
+  name: ec2-micro
+  title: VM micro (EC2.micro)
+  description: Instance EC2 gérée par Crossplane
   annotations:
     # — Cluster où vit le claim —
     backstage.io/managed-by-location: "kubernetes: microk8s-cluster"
@@ -18,7 +21,6 @@ metadata:
 
     # — Cluster + context, déjà OK —
     crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
-
 
 spec:
   type: crossplane-claim
