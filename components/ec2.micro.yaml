@@ -7,21 +7,12 @@ metadata:
   annotations:
     # — Cluster où vit le claim —
     backstage.io/managed-by-location: "kubernetes: microk8s-cluster"
-
-    # — Coordonnées complètes du claim —
+    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
     terasky.backstage.io/claim-name:    ec2-micro
     terasky.backstage.io/claim-plural:  virtualmachines
     terasky.backstage.io/claim-group:   platform.example.org
     terasky.backstage.io/claim-version: v1alpha1
-
-    # — Sélecteur pour retrouver le namespace —
-    backstage.io/kubernetes-label-selector: |
-      crossplane.io/claim-name=ec2-micro,
-      crossplane.io/claim-namespace=default
-
-    # — Cluster + context, déjà OK —
-    crossplane.io/kubernetes-cluster: microk8s-cluster::microk8s
-
+    backstage.io/kubernetes-label-selector: crossplane.io/claim-name=ec2-micro,crossplane.io/claim-namespace=default
 spec:
   type: crossplane-claim
   lifecycle: production
