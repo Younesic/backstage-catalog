@@ -3,13 +3,11 @@ kind: Location
 metadata:
   name: awb-root
 spec:
-  type: file            # ← explicite (ou laissez vide)
   rules:
     - allow: [Group, Component, Template]
   targets:
     - ./groups/infra-group.yaml
     - ./templates/create-vm/template.yaml
-
 
 # ↘  NOUVELLE Location, on pointe le dossier (pas de *.yaml)
 ---
