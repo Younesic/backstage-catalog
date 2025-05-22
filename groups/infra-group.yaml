@@ -1,8 +1,39 @@
+# ─────—— Organisation ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: sig
+  title: SIG
+  namespace: default
+
+spec:
+  type: organization
+  children: [production]
+
+---
+# ─────—— Département ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: production
+  title: Département Production
+  namespace: default
+
+spec:
+  type: department
+  parent: sig
+  children: [infra]
+
+---
+# ─────—— Équipe (team) ─────——
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
   name: infra
-  title: Infra
+  title: Équipe Infra
+  namespace: default
 spec:
-  type: department
-  children: []
+  type: team
+  parent: production
+  children: []          
+
