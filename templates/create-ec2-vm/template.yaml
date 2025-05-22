@@ -6,33 +6,33 @@ metadata:
   description: >-
     Crée un claim Crossplane VirtualMachine et injecte automatiquement
     l'annotation terasky.backstage.io/owner afin que le plugin Kubernetes
-    Ingestor renseigne correctement le propriétaire du composant Backstage.
+    Ingestor renseigne correctement le propriétaire.
 spec:
-  owner: group:infra
+  owner: group:infra     # ← propriétaire du TEMPLATE lui-même
   type: service
 
-  # ------------------------------
+  ############################################################
   # 1. FORM PARAMETERS
-  # ------------------------------
+  ############################################################
   parameters:
     - title: Resource Metadata
       required: [xrName, xrNamespace, owner]
       properties:
         xrName:
           title: Name
-          description: Unique name for the VirtualMachine claim (DNS‑1123)
+          description: Nom unique du VirtualMachine (DNS-1123)
           type: string
           pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
           maxLength: 63
         xrNamespace:
           title: Namespace
-          description: Target namespace (default if omitted)
+          description: Namespace cible (default si vide)
           type: string
           pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
           maxLength: 63
           default: default
         owner:
-          title: Owner (Backstage group)
+          title: Groupe propriétaire
           type: string
           ui:field: OwnerPicker
           ui:options:
@@ -60,7 +60,7 @@ spec:
           enum: [runtime, direct-reference, label-selector]
           default: runtime
         compositionRef:
-          title: Composition Reference (strategy = direct-reference)
+          title: Composition Reference (direct-reference)
           type: object
           properties:
             name:
@@ -68,7 +68,7 @@ spec:
               type: string
               enum: [vm-aws-micro, vm-aws-nano]
         compositionSelector:
-          title: Composition Selector (strategy = label-selector)
+          title: Composition Selector (label-selector)
           type: object
           properties:
             matchLabels:
@@ -109,9 +109,9 @@ spec:
           title: Base path (if custom layout)
           type: string
 
-  # ------------------------------
+  ############################################################
   # 2. WORKFLOW STEPS
-  # ------------------------------
+  ############################################################
   steps:
     # 2.1 Generate the basic claim manifest
     - id: generate
@@ -129,7 +129,7 @@ spec:
           parameters:
             size: ${{ parameters.parameters.size }}
 
-    # 2.2 Inject owner annotation so Ingestor sets spec.owner correctly
+    # 2.2 Inject owner annotation
     - id: inject-owner
       name: Inject owner annotation
       action: yaml:set
@@ -138,7 +138,7 @@ spec:
         path: metadata.annotations.terasky.backstage.io/owner
         value: ${{ parameters.owner }}
 
-    # 2.3 Optional: add compositionRef when strategy is direct-reference
+    # 2.3 Add compositionRef when strategy is direct-reference
     - id: add-compositionRef
       if: ${{ parameters.compositionSelectionStrategy == 'direct-reference' }}
       name: Add compositionRef
@@ -148,7 +148,7 @@ spec:
         path: spec.compositionRef.name
         value: ${{ parameters.compositionRef.name }}
 
-    # 2.4 Optional: add compositionSelector when strategy is label-selector
+    # 2.4 Add compositionSelector when strategy is label-selector
     - id: add-compositionSelector
       if: ${{ parameters.compositionSelectionStrategy == 'label-selector' }}
       name: Add compositionSelector
@@ -158,7 +158,7 @@ spec:
         path: spec.compositionSelector.matchLabels
         value: ${{ parameters.compositionSelector.matchLabels }}
 
-    # 2.5 Publish phase - push to Git or provide download link
+    # 2.5 Publish or download
     - id: publish-git
       if: ${{ parameters.pushToGit }}
       name: Publish manifest to Git
@@ -172,20 +172,23 @@ spec:
 
     - id: publish-file
       if: ${{ !parameters.pushToGit }}
-      name: Provide manifest for download
+      name: Provide manifest download
       action: publish:file
       input:
         path: ${{ steps.generate.output.targetPath }}
 
-  # ------------------------------
-  # 3. OUTPUT MESSAGE
-  # ------------------------------
+  ############################################################
+  # 3. OUTPUT SECTION  (must be an ARRAY)
+  ############################################################
   output:
-    text: |
-      ✅ Claim manifest generated for **${{ parameters.xrName }}**.
-      {% if parameters.pushToGit %}
-      A pull‑request has been opened in **${{ parameters.repoUrl }}** (branch `${{ parameters.targetBranch }}`).
-      {% else %}
-      Download the YAML above, then apply it with:
-        kubectl apply -f <file.yaml>
-      {% endif %}
+    - title: VirtualMachine claim generated
+      text: |
+        ✅ Claim manifest for **${{ parameters.xrName }}** has been generated.
+
+        {% if parameters.pushToGit %}
+        A pull-request has been opened in **${{ parameters.repoUrl }}** (branch `{{ parameters.targetBranch }}`).
+        {% else %}
+        Download the YAML artifact above, then apply it with :
+
+            kubectl apply -f <file.yaml>
+        {% endif %}
