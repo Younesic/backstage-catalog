@@ -128,6 +128,7 @@ spec:
         fileName: vm-claim.yaml
 
     # 2.2 Inject owner annotation
+    - id: inject-owner
       name: Inject owner annotation
       action: yaml:set
       input:
@@ -135,7 +136,7 @@ spec:
         path: metadata.annotations.terasky.backstage.io/owner
         value: ${{ parameters.owner }}
 
-    # 2.3 Add compositionRef when strategy is direct-reference
+    # 2.3 Add compositionRef when strategy is direct-reference when strategy is direct-reference
     - id: add-compositionRef
       if: ${{ parameters.compositionSelectionStrategy == 'direct-reference' }}
       name: Add compositionRef
