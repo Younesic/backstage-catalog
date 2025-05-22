@@ -130,17 +130,20 @@ spec:
           annotations:
             terasky.backstage.io/owner: ${{ parameters.owner }}
 
-    # 2.2 Publish or download
-    - id: publish-git
+    # 2.2 Publish to existing repository (via Pull-Request) or offer direct download
+    - id: publish-pr
       if: ${{ parameters.pushToGit }}
-      name: Publish manifest to Git
-      action: publish:github
+      name: Open PR in existing repo
+      action: publish:github:pull-request
       input:
-        repoUrl: ${{ parameters.repoUrl }}
+        repoUrl: ${{ parameters.repoUrl }}            # must point to an EXISTING repo
         branchName: vm-${{ parameters.xrName }}
-        targetPath: ${{ steps.generate.output.targetPath }}
-        commitMessage: "feat: add VirtualMachine ${{ parameters.xrName }}"
-        targetBranch: ${{ parameters.targetBranch }}
+        title: "feat: add VirtualMachine ${{ parameters.xrName }}"
+        description: |
+          Scaffolder-generated manifest for Crossplane VirtualMachine **${{ parameters.xrName }}**.
+        sourcePath: ${{ steps.generate.output.targetPath }}
+        targetPath: ${{ parameters.basePath }}        # e.g. prod/virtual-machines
+        targetBranch: ${{ parameters.targetBranch }}  # usually main
 
     - id: publish-file
       if: ${{ !parameters.pushToGit }}
