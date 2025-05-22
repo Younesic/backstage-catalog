@@ -8,7 +8,7 @@ metadata:
     l'annotation terasky.backstage.io/owner afin que le plugin Kubernetes
     Ingestor renseigne correctement le propriétaire du composant Backstage.
 spec:
-  owner: group:default/infra
+  owner: group:infra
   type: service
 
   # ------------------------------
