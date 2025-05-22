@@ -9,3 +9,4 @@ spec:
       platform.example.org/size: micro         # cible la Composition “micro”
   parameters:
     size: micro                                # paramètre passé à la Composition
+    owner: infra
