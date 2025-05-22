@@ -1,0 +1,184 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: virtualmachine
+  title: VirtualMachine
+  description: >-
+    A template to create a compositevirtualmachines.platform.example.org claim
+    (VirtualMachine) and automatically inject the terasky.backstage.io/owner
+    annotation so the Kubernetes Ingestor assigns the correct owner when the
+    component is ingested.
+spec:
+  # Optional: set the template owner if you want to track maintainers of the template itself
+  # owner: group:default/infra-platform
+  type: service
+
+  #############################
+  # 1. FORM PARAMETERS        #
+  #############################
+  parameters:
+    - title: Resource Metadata
+      required: [xrName, xrNamespace, owner]
+      properties:
+        xrName:
+          title: Name
+          description: The name of the VirtualMachine resource
+          type: string
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+          maxLength: 63
+        xrNamespace:
+          title: Namespace
+          description: Namespace in which to create the claim (default if omitted)
+          type: string
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+          maxLength: 63
+          default: default
+        owner:
+          title: Owner
+          description: Backstage Group that owns the VM
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: [Group]
+
+    - title: Resource Spec
+      properties:
+        parameters:
+          title: Parameters
+          type: object
+          required: [size]
+          properties:
+            size:
+              title: Instance size
+              enum: [nano, micro, small, medium, large]
+              type: string
+
+    - title: Crossplane Settings
+      properties:
+        compositionSelectionStrategy:
+          title: Composition Selection Strategy
+          description: How the Composition is selected
+          type: string
+          enum: [runtime, direct-reference, label-selector]
+          default: runtime
+        compositionRef:
+          title: Composition Reference (when using direct-reference)
+          type: object
+          properties:
+            name:
+              title: Composition name
+              type: string
+              enum: [vm-aws-micro, vm-aws-nano]
+        compositionSelector:
+          title: Composition Label Selector (when using label-selector)
+          type: object
+          properties:
+            matchLabels:
+              title: Match Labels
+              type: object
+              additionalProperties:
+                type: string
+
+    - title: Creation Settings
+      properties:
+        pushToGit:
+          title: Push manifest to GitOps repository
+          type: boolean
+          default: true
+        repoUrl:
+          title: Repository URL
+          description: github.com?owner=<OWNER>&repo=<REPO>
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts: [github.com, gitlab.com]
+        targetBranch:
+          title: Target branch for PR
+          type: string
+          default: main
+        manifestLayout:
+          title: Manifest layout in repo
+          type: string
+          enum: [cluster-scoped, namespace-scoped, custom]
+          default: cluster-scoped
+        clusters:
+          title: Target clusters (if cluster‑scoped)
+          type: array
+          items:
+            type: string
+            enum: [microk8s-cluster]
+          ui:widget: checkboxes
+        basePath:
+          title: Base path (if custom layout)
+          type: string
+
+  #############################
+  # 2. WORKFLOW STEPS         #
+  #############################
+  steps:
+    # --- Generate the Crossplane claim YAML
+    - id: generate
+      name: Generate VirtualMachine claim
+      action: terasky:claim-template
+      input:
+        claimKind: VirtualMachine
+        claimGroup: platform.example.org
+        claimVersion: v1alpha1
+        fileName: vm-claim.yaml
+        # Map form parameters to manifest
+        metadata:
+          name: ${{ parameters.xrName }}
+          namespace: ${{ parameters.xrNamespace }}
+        spec:
+          parameters:
+            size: ${{ parameters.parameters.size }}
+          # Optional advanced Crossplane settings
+          $if: ${{ parameters.compositionSelectionStrategy == 'direct-reference' }}
+          compositionRef:
+            name: ${{ parameters.compositionRef.name }}
+          $if: ${{ parameters.compositionSelectionStrategy == 'label-selector' }}
+          compositionSelector:
+            matchLabels: ${{ parameters.compositionSelector.matchLabels }}
+
+    # --- Inject the terasky.backstage.io/owner annotation
+    - id: inject-owner
+      name: Inject owner annotation
+      action: yaml:set
+      input:
+        targetFile: ${{ steps.generate.output.targetPath }}
+        path: metadata.annotations.terasky.backstage.io/owner
+        value: ${{ parameters.owner }}
+
+    # --- Publish or provide download depending on pushToGit flag
+    - id: publish-to-git
+      if: ${{ parameters.pushToGit }}
+      name: Publish manifest to Git
+      action: publish:github
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        branchName: vm-${{ parameters.xrName }}
+        targetPath: ${{ steps.generate.output.targetPath }}
+        commitMessage: "feat: add VirtualMachine ${{ parameters.xrName }}"
+        targetBranch: ${{ parameters.targetBranch }}
+
+    - id: provide-download
+      if: ${{ !parameters.pushToGit }}
+      name: Provide manifest download
+      action: publish:file
+      input:
+        path: ${{ steps.generate.output.targetPath }}
+
+  #############################
+  # 3. OUTPUTS                #
+  #############################
+  output:
+    text: |
+      ✅ Crossplane claim manifest generated for ${{ parameters.xrName }}.
+      {% if parameters.pushToGit %}
+      A pull‑request has been opened against ${{ parameters.repoUrl }} (branch ${{ parameters.targetBranch }}).
+      {% else %}
+      You can download the YAML manifest from the link above and apply it with:
+
+          kubectl apply -f <downloaded-file.yaml>
+      {% endif %}

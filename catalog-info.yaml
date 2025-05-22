@@ -8,6 +8,7 @@ spec:
   targets:
     - ./groups/infra-group.yaml
     - ./templates/create-vm/template.yaml
+    - ./templates/create-ec2-vm/template.yaml
 
 # ↘  NOUVELLE Location, on pointe le dossier (pas de *.yaml)
 ---
