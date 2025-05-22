@@ -4,15 +4,16 @@ metadata:
   name: virtualmachine
   title: VirtualMachine
   description: >-
-    Crée un claim Crossplane VirtualMachine (platform.example.org/v1alpha1)
-    et injecte automatiquement l'annotation terasky.backstage.io/owner afin que
-    le plugin Kubernetes Ingestor attribue le bon propriétaire au composant.
+    Crée un claim Crossplane VirtualMachine (platform.example.org/v1alpha1) et
+    ajoute automatiquement l'annotation terasky.backstage.io/owner pour que
+    l'ingestor Backstage assigne le bon propriétaire au composant.
+  # le propriétaire du TEMPLATE lui‑même (facultatif mais recommandé)
+  owner: group:infra
 spec:
-  owner: group:infra       # propriétaire du TEMPLATE lui‑même
   type: service
 
   ############################################################
-  # 1. FORM PARAMETERS
+  # 1. PARAMÈTRES DU FORMULAIRE
   ############################################################
   parameters:
     - title: Resource Metadata
@@ -32,7 +33,7 @@ spec:
           maxLength: 63
           default: default
         owner:
-          title: Groupe propriétaire (Backstage)
+          title: Groupe propriétaire
           type: string
           ui:field: OwnerPicker
           ui:options:
@@ -60,7 +61,7 @@ spec:
           enum: [runtime, direct-reference, label-selector]
           default: runtime
         compositionRef:
-          title: Composition Reference (strategie direct-reference)
+          title: Composition Reference (strategy direct-reference)
           type: object
           properties:
             name:
@@ -68,7 +69,7 @@ spec:
               type: string
               enum: [vm-aws-micro, vm-aws-nano]
         compositionSelector:
-          title: Composition Selector (strategie label-selector)
+          title: Composition Selector (strategy label-selector)
           type: object
           properties:
             matchLabels:
@@ -110,10 +111,10 @@ spec:
           type: string
 
   ############################################################
-  # 2. WORKFLOW STEPS
+  # 2. ÉTAPES DU WORKFLOW
   ############################################################
   steps:
-    # 2.1 Generate the claim manifest (annotation owner incluse)
+    # 2.1 Génération du manifeste VirtualMachine (annotation owner incluse)
     - id: generate
       name: Generate claim YAML
       action: terasky:claim-template
@@ -122,28 +123,31 @@ spec:
         kind: VirtualMachine
         nameParam: xrName
         namespaceParam: xrNamespace
+        # Injection des paramètres du formulaire
         parameters: ${{ parameters }}
+        # Exclure les champs non destinés au spec
         excludeParams: [owner,pushToGit,repoUrl,targetBranch,manifestLayout,clusters,basePath]
+        # Clusters cibles pour GitOps layout cluster‑scoped
         clusters: [microk8s-cluster]
         fileName: vm-claim.yaml
-        metadata:
-          annotations:
-            terasky.backstage.io/owner: ${{ parameters.owner }}
+        # Injection directe de l'annotation owner
+        annotations:
+          terasky.backstage.io/owner: ${{ parameters.owner }}
 
-    # 2.2 Publish to existing repository (via Pull-Request) or offer direct download
+    # 2.2 Publication : PR dans un repo existant ou simple téléchargement
     - id: publish-pr
       if: ${{ parameters.pushToGit }}
       name: Open PR in existing repo
       action: publish:github:pull-request
       input:
-        repoUrl: ${{ parameters.repoUrl }}            # must point to an EXISTING repo
+        repoUrl: ${{ parameters.repoUrl }}
         branchName: vm-${{ parameters.xrName }}
         title: "feat: add VirtualMachine ${{ parameters.xrName }}"
         description: |
-          Scaffolder-generated manifest for Crossplane VirtualMachine **${{ parameters.xrName }}**.
+          Scaffolder‑generated Crossplane VirtualMachine manifest (**${{ parameters.xrName }}**).
         sourcePath: ${{ steps.generate.output.targetPath }}
-        targetPath: ${{ parameters.basePath }}        # e.g. prod/virtual-machines
-        targetBranch: ${{ parameters.targetBranch }}  # usually main
+        targetPath: ${{ parameters.basePath }}
+        targetBranch: ${{ parameters.targetBranch }}
 
     - id: publish-file
       if: ${{ !parameters.pushToGit }}
