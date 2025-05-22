@@ -8,6 +8,7 @@ metadata:
     l'annotation terasky.backstage.io/owner afin que le plugin Kubernetes
     Ingestor renseigne correctement le propriétaire du composant Backstage.
 spec:
+  owner: group:default/infra
   type: service
 
   # ------------------------------
@@ -19,7 +20,7 @@ spec:
       properties:
         xrName:
           title: Name
-          description: Unique name for the VirtualMachine claim (DNS-1123)
+          description: Unique name for the VirtualMachine claim (DNS‑1123)
           type: string
           pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
           maxLength: 63
@@ -183,7 +184,7 @@ spec:
     text: |
       ✅ Claim manifest generated for **${{ parameters.xrName }}**.
       {% if parameters.pushToGit %}
-      A pull-request has been opened in **${{ parameters.repoUrl }}** (branch `${{ parameters.targetBranch }}`).
+      A pull‑request has been opened in **${{ parameters.repoUrl }}** (branch `${{ parameters.targetBranch }}`).
       {% else %}
       Download the YAML above, then apply it with:
         kubectl apply -f <file.yaml>
