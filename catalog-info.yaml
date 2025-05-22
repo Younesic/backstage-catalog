@@ -8,6 +8,6 @@ spec:
   targets:
     - ./groups/infra-group.yaml
     - ./templates/create-vm/template.yaml
-    - ./components
+    #- ./components
 
 
