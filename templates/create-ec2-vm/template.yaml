@@ -118,19 +118,16 @@ spec:
       name: Generate claim YAML
       action: terasky:claim-template
       input:
-        claimKind: VirtualMachine
-        claimGroup: platform.example.org
-        claimVersion: v1alpha1
+        apiVersion: platform.example.org/v1alpha1
+        kind: VirtualMachine
+        nameParam: xrName
+        namespaceParam: xrNamespace
+        parameters: ${{ parameters }}
+        excludeParams: [owner,pushToGit,repoUrl,targetBranch,manifestLayout,clusters,basePath]
+        clusters: [microk8s-cluster]
         fileName: vm-claim.yaml
-        metadata:
-          name: ${{ parameters.xrName }}
-          namespace: ${{ parameters.xrNamespace }}
-        spec:
-          parameters:
-            size: ${{ parameters.parameters.size }}
 
     # 2.2 Inject owner annotation
-    - id: inject-owner
       name: Inject owner annotation
       action: yaml:set
       input:
