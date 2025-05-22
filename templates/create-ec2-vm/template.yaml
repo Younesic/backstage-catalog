@@ -4,11 +4,11 @@ metadata:
   name: virtualmachine
   title: VirtualMachine
   description: >-
-    Crée un claim Crossplane VirtualMachine et injecte automatiquement
-    l'annotation terasky.backstage.io/owner afin que le plugin Kubernetes
-    Ingestor renseigne correctement le propriétaire.
+    Crée un claim Crossplane VirtualMachine (platform.example.org/v1alpha1)
+    et injecte automatiquement l'annotation terasky.backstage.io/owner afin que
+    le plugin Kubernetes Ingestor attribue le bon propriétaire au composant.
 spec:
-  owner: group:infra     # ← propriétaire du TEMPLATE lui‑même
+  owner: group:infra       # propriétaire du TEMPLATE lui‑même
   type: service
 
   ############################################################
@@ -20,7 +20,7 @@ spec:
       properties:
         xrName:
           title: Name
-          description: Nom unique du VirtualMachine (DNS‑1123)
+          description: Nom DNS‑1123 pour le VirtualMachine claim
           type: string
           pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
           maxLength: 63
@@ -32,7 +32,7 @@ spec:
           maxLength: 63
           default: default
         owner:
-          title: Groupe propriétaire
+          title: Groupe propriétaire (Backstage)
           type: string
           ui:field: OwnerPicker
           ui:options:
@@ -60,7 +60,7 @@ spec:
           enum: [runtime, direct-reference, label-selector]
           default: runtime
         compositionRef:
-          title: Composition Reference (direct-reference)
+          title: Composition Reference (strategie direct-reference)
           type: object
           properties:
             name:
@@ -68,7 +68,7 @@ spec:
               type: string
               enum: [vm-aws-micro, vm-aws-nano]
         compositionSelector:
-          title: Composition Selector (label-selector)
+          title: Composition Selector (strategie label-selector)
           type: object
           properties:
             matchLabels:
@@ -113,7 +113,7 @@ spec:
   # 2. WORKFLOW STEPS
   ############################################################
   steps:
-    # 2.1 Generate the basic claim manifest
+    # 2.1 Generate the claim manifest (annotation owner incluse)
     - id: generate
       name: Generate claim YAML
       action: terasky:claim-template
@@ -130,35 +130,7 @@ spec:
           annotations:
             terasky.backstage.io/owner: ${{ parameters.owner }}
 
-    - id: inject-owner
-      name: Inject owner annotation
-      action: yaml:set
-      input:
-        targetFile: ${{ steps.generate.output.targetPath }}
-        path: metadata.annotations.terasky.backstage.io/owner
-        value: ${{ parameters.owner }}
-
-    # 2.3 Add compositionRef when strategy is direct-reference when strategy is direct-reference
-    - id: add-compositionRef
-      if: ${{ parameters.compositionSelectionStrategy == 'direct-reference' }}
-      name: Add compositionRef
-      action: yaml:set
-      input:
-        targetFile: ${{ steps.generate.output.targetPath }}
-        path: spec.compositionRef.name
-        value: ${{ parameters.compositionRef.name }}
-
-    # 2.4 Add compositionSelector when strategy is label-selector
-    - id: add-compositionSelector
-      if: ${{ parameters.compositionSelectionStrategy == 'label-selector' }}
-      name: Add compositionSelector
-      action: yaml:set
-      input:
-        targetFile: ${{ steps.generate.output.targetPath }}
-        path: spec.compositionSelector.matchLabels
-        value: ${{ parameters.compositionSelector.matchLabels }}
-
-    # 2.5 Publish or download
+    # 2.2 Publish or download
     - id: publish-git
       if: ${{ parameters.pushToGit }}
       name: Publish manifest to Git
@@ -176,5 +148,3 @@ spec:
       action: publish:file
       input:
         path: ${{ steps.generate.output.targetPath }}
-
-
