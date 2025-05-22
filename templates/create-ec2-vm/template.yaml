@@ -126,8 +126,10 @@ spec:
         excludeParams: [owner,pushToGit,repoUrl,targetBranch,manifestLayout,clusters,basePath]
         clusters: [microk8s-cluster]
         fileName: vm-claim.yaml
+        metadata:
+          annotations:
+            terasky.backstage.io/owner: ${{ parameters.owner }}
 
-    # 2.2 Inject owner annotation
     - id: inject-owner
       name: Inject owner annotation
       action: yaml:set
