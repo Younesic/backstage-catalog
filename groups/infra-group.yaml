@@ -23,8 +23,7 @@ spec:
   type: department
   parent: sig
   children: [infra]
-
-# ─────—— Département ─────——
+---
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
