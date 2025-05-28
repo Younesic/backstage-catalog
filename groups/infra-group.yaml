@@ -24,8 +24,31 @@ spec:
   parent: sig
   children: [infra]
 
+# ─────—— Département ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: DC
+  title: Département DC
+  namespace: default
+
+spec:
+  type: department
+  parent: sig
+  children: [vente]
 ---
 # ─────—— Équipe (team) ─────——
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: vente
+  title: Équipe Vente
+  namespace: default
+spec:
+  type: team
+  parent: DC
+  children: []          
+
 apiVersion: backstage.io/v1alpha1
 kind: Group
 metadata:
@@ -35,5 +58,4 @@ metadata:
 spec:
   type: team
   parent: production
-  children: []          
-
+  children: []   
