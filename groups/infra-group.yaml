@@ -45,6 +45,8 @@ metadata:
   name: vente
   title: Équipe Vente
   namespace: default
+  annotations:
+    backstage.io/alias: "group:default/vente"
 spec:
   type: team
   parent: DC
