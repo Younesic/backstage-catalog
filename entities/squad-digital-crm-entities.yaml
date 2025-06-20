@@ -1,0 +1,16 @@
+# Entités générées par Crossplane
+# Squad: SQUAD_NAME
+# Environnement: ENVIRONMENT
+# Timestamp: TIMESTAMP
+
+# TODO: Intégrer la génération des entités Backstage ici
+# basée sur spec.terraformVars
+
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: generated-system
+  title: Système Généré
+spec:
+  owner: SQUAD_NAME
+  domain: DOMAIN_NAME
