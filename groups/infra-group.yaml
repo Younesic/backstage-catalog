@@ -62,3 +62,15 @@ spec:
   type: team
   parent: production
   children: []   
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: kubernetes-auto-ingested
+  title: kubernetes-auto-ingested
+  namespace: default
+spec:
+  type: team
+  parent: production
+  children: [] 
